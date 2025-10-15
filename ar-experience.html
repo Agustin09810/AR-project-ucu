@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR Treasure Hunt - Sacré Coeur</title>
+
+    <!-- A-Frame -->
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+
+    <!-- AR.js -->
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* HUD - Heads Up Display */
+        #hud {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        #progress-bar {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            color: white;
+        }
+
+        .progress-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .marker-status {
+            text-align: center;
+            margin: 5px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            min-width: 60px;
+        }
+
+        .marker-status.found {
+            background: rgba(76, 175, 80, 0.3);
+        }
+
+        .marker-icon {
+            font-size: 2em;
+        }
+
+        .marker-label {
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+
+        /* Notification System */
+        #notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            z-index: 2000;
+            display: none;
+            text-align: center;
+            max-width: 80%;
+            pointer-events: auto;
+        }
+
+        #notification.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        #notification h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        #notification p {
+            color: #555;
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+
+        #notification .icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .close-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: bold;
+            margin-top: 15px;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+
+        /* Final Treasure Modal */
+        #treasure-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 3000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #treasure-modal.show {
+            display: flex;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .treasure-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 90%;
+            animation: bounceIn 0.6s ease-out;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+
+        .treasure-content h1 {
+            color: #FFD700;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .treasure-content .treasure-icon {
+            font-size: 5em;
+            margin: 20px 0;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            display: inline-block;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        /* Instructions overlay */
+        #instructions-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 4000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .instructions-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .instructions-content h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .instructions-content p {
+            color: #555;
+            line-height: 1.6;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Instructions Overlay (shown on load) -->
+    <div id="instructions-overlay">
+        <div class="instructions-content">
+            <div style="font-size: 3em; margin-bottom: 15px;">📱</div>
+            <h2>¿Cómo jugar?</h2>
+            <p>Apunta tu cámara a los <strong>marcadores AR</strong> que encontrarás por el edificio.</p>
+            <p>Cuando detectes un marcador, verás aparecer contenido 3D y recibirás una pista.</p>
+            <p><strong>Encuentra los 4 marcadores</strong> para completar la búsqueda del tesoro.</p>
+            <button class="close-btn" onclick="startExperience()">¡Entendido, comenzar!</button>
+        </div>
+    </div>
+
+    <!-- HUD - Progress Display -->
+    <div id="hud">
+        <div id="progress-bar">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <strong>Progreso: <span id="found-count">0</span>/4 marcadores</strong>
+                <div style="font-size: 1.5em;">🏛️</div>
+            </div>
+            <div class="progress-container">
+                <div class="marker-status" id="status-0">
+                    <div class="marker-icon">🔍</div>
+                    <div class="marker-label">Entrada</div>
+                </div>
+                <div class="marker-status" id="status-1">
+                    <div class="marker-icon">📜</div>
+                    <div class="marker-label">Biblioteca</div>
+                </div>
+                <div class="marker-status" id="status-2">
+                    <div class="marker-icon">🗝️</div>
+                    <div class="marker-label">Sala</div>
+                </div>
+                <div class="marker-status" id="status-3">
+                    <div class="marker-icon">💎</div>
+                    <div class="marker-label">Tesoro</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Modal -->
+    <div id="notification">
+        <div class="icon" id="notif-icon">✨</div>
+        <h2 id="notif-title">Marcador Encontrado</h2>
+        <p id="notif-message">Has encontrado una pista...</p>
+        <button class="close-btn" onclick="closeNotification()">Continuar</button>
+    </div>
+
+    <!-- Final Treasure Modal -->
+    <div id="treasure-modal">
+        <div class="treasure-content">
+            <div class="treasure-icon">🎉💎🏆</div>
+            <h1>¡FELICITACIONES!</h1>
+            <h2>Has encontrado el Tesoro del Sacré Coeur</h2>
+            <p>Has completado exitosamente la búsqueda del tesoro. La leyenda era cierta: el verdadero tesoro del Sacré Coeur es el conocimiento que se encuentra en cada rincón de este edificio histórico.</p>
+            <p><strong>Marcadores encontrados: 4/4</strong></p>
+            <a href="index.html" class="back-btn">Volver al Inicio</a>
+        </div>
+    </div>
+
+    <!-- AR Scene -->
+    <a-scene
+        embedded
+        arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;"
+        vr-mode-ui="enabled: false"
+        renderer="logarithmicDepthBuffer: true; precision: medium;"
+        loading-screen="enabled: false">
+
+        <a-assets>
+            <!-- You can add 3D models here -->
+            <!-- <a-asset-item id="tree" src="models/tree.gltf"></a-asset-item> -->
+        </a-assets>
+
+        <!-- MARKER 0: Entrance - Introduction -->
+        <a-marker type="pattern" url="markers/pattern-marker-0.patt" id="marker-0" registerevents>
+            <a-box position="0 0.5 0" material="color: #4CAF50;"
+                   animation="property: rotation; to: 0 360 0; loop: true; dur: 3000">
+            </a-box>
+            <a-text value="INICIO" position="-0.5 1.5 0" color="#FFFFFF"
+                    align="center" width="2"></a-text>
+            <a-cone position="0 0 0" radius-bottom="0.3" radius-top="0" height="0.5"
+                    material="color: #FFD700;" rotation="0 0 0"></a-cone>
+        </a-marker>
+
+        <!-- MARKER 1: Library - Second Clue -->
+        <a-marker type="pattern" url="markers/pattern-marker-1.patt" id="marker-1" registerevents>
+            <a-cylinder position="0 0.5 0" radius="0.3" height="1"
+                        material="color: #2196F3;"
+                        animation="property: position; to: 0 1 0; dir: alternate; loop: true; dur: 1000">
+            </a-cylinder>
+            <a-text value="BIBLIOTECA" position="-0.8 1.5 0" color="#FFFFFF"
+                    align="center" width="2"></a-text>
+            <a-torus position="0 1 0" radius="0.4" radius-tubular="0.05"
+                     material="color: #FF5722;"
+                     rotation="90 0 0"></a-torus>
+        </a-marker>
+
+        <!-- MARKER 2: Hall - Third Clue -->
+        <a-marker type="pattern" url="markers/pattern-marker-2.patt" id="marker-2" registerevents>
+            <a-sphere position="0 0.5 0" radius="0.4" material="color: #FF9800;">
+            </a-sphere>
+            <a-text value="SALA PRINCIPAL" position="-1 1.5 0" color="#FFFFFF"
+                    align="center" width="2"></a-text>
+            <a-octahedron position="0 0.5 0" radius="0.5" material="color: #9C27B0;"
+                          animation="property: rotation; to: 360 360 0; loop: true; dur: 4000">
+            </a-octahedron>
+        </a-marker>
+
+        <!-- MARKER 3: Treasure - Final -->
+        <a-marker type="pattern" url="markers/pattern-marker-3.patt" id="marker-3" registerevents>
+            <a-entity position="0 0.5 0">
+                <a-box position="0 0 0" width="0.5" height="0.5" depth="0.5"
+                       material="color: #FFD700; metalness: 0.8; roughness: 0.2"
+                       animation="property: rotation; to: 0 360 0; loop: true; dur: 2000">
+                </a-box>
+                <a-text value="TESORO" position="-0.5 1 0" color="#FFD700"
+                        align="center" width="2"></a-text>
+            </a-entity>
+
+            <!-- Sparkles effect -->
+            <a-entity position="0 0.5 0">
+                <a-sphere position="0.5 0 0" radius="0.1" material="color: #FFEB3B; opacity: 0.7"
+                          animation="property: position; to: 0.5 1 0; dir: alternate; loop: true; dur: 1500; easing: easeInOutQuad">
+                </a-sphere>
+                <a-sphere position="-0.5 0 0" radius="0.1" material="color: #FFC107; opacity: 0.7"
+                          animation="property: position; to: -0.5 1 0; dir: alternate; loop: true; dur: 1500; delay: 300; easing: easeInOutQuad">
+                </a-sphere>
+                <a-sphere position="0 0 0.5" radius="0.1" material="color: #FFD700; opacity: 0.7"
+                          animation="property: position; to: 0 1 0.5; dir: alternate; loop: true; dur: 1500; delay: 600; easing: easeInOutQuad">
+                </a-sphere>
+            </a-entity>
+        </a-marker>
+
+        <!-- Camera -->
+        <a-entity camera></a-entity>
+    </a-scene>
+
+    <script>
+        // Game state
+        const gameState = {
+            markersFound: new Set(),
+            totalMarkers: 4,
+            markerData: {
+                0: {
+                    name: "La Entrada del Misterio",
+                    icon: "🏛️",
+                    message: "Has descubierto la entrada. La leyenda cuenta que un antiguo rector escondió un tesoro en este edificio. Busca las pistas en los lugares donde el conocimiento florece.",
+                    clue: "Dirígete a donde los libros guardan secretos milenarios..."
+                },
+                1: {
+                    name: "Los Archivos Antiguos",
+                    icon: "📚",
+                    message: "¡Has encontrado la biblioteca! Entre estos libros se esconde una pista. Los textos antiguos mencionan: 'Donde se reúnen las mentes, cerca del corazón del edificio'.",
+                    clue: "El siguiente paso está en la sala donde todos se congregan..."
+                },
+                2: {
+                    name: "El Corazón del Sacré Coeur",
+                    icon: "🗝️",
+                    message: "¡Excelente! Estás en la sala principal. Una inscripción antigua dice: 'El tesoro no es oro ni plata, es el conocimiento que se transmite de generación en generación'.",
+                    clue: "Para la revelación final, busca el último marcador..."
+                },
+                3: {
+                    name: "El Tesoro Revelado",
+                    icon: "💎",
+                    message: "¡INCREÍBLE! Has encontrado el tesoro final. El verdadero tesoro del Sacré Coeur es la educación y el conocimiento que se imparte en estas aulas. Cada estudiante que pasa por aquí lleva consigo una parte de este tesoro invaluable.",
+                    clue: "¡Misión cumplida! Has descubierto todos los secretos."
+                }
+            }
+        };
+
+        // Load saved progress from localStorage
+        function loadProgress() {
+            const saved = localStorage.getItem('treasureHuntProgress');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                gameState.markersFound = new Set(progress);
+                updateUI();
+            }
+        }
+
+        // Save progress to localStorage
+        function saveProgress() {
+            localStorage.setItem('treasureHuntProgress',
+                JSON.stringify([...gameState.markersFound]));
+        }
+
+        // Start experience (hide instructions)
+        function startExperience() {
+            document.getElementById('instructions-overlay').style.display = 'none';
+            loadProgress();
+
+            // Play ambient sound (optional)
+            // const audio = new Audio('sounds/ambient.mp3');
+            // audio.loop = true;
+            // audio.play();
+        }
+
+        // Register custom component for marker events
+        AFRAME.registerComponent('registerevents', {
+            init: function () {
+                const marker = this.el;
+                const markerId = parseInt(marker.id.split('-')[1]);
+
+                marker.addEventListener('markerFound', function() {
+                    console.log('Marker found:', markerId);
+                    onMarkerFound(markerId);
+                });
+
+                marker.addEventListener('markerLost', function() {
+                    console.log('Marker lost:', markerId);
+                });
+            }
+        });
+
+        // Handle marker detection
+        function onMarkerFound(markerId) {
+            // Check if this marker was already found
+            if (gameState.markersFound.has(markerId)) {
+                console.log('Marker already found:', markerId);
+                return;
+            }
+
+            // Add to found markers
+            gameState.markersFound.add(markerId);
+            saveProgress();
+
+            // Play success sound
+            playSound('success');
+
+            // Update UI
+            updateUI();
+
+            // Show notification
+            showNotification(markerId);
+
+            // Check if all markers found
+            if (gameState.markersFound.size === gameState.totalMarkers) {
+                setTimeout(() => {
+                    showTreasureModal();
+                }, 3000);
+            }
+        }
+
+        // Update progress UI
+        function updateUI() {
+            document.getElementById('found-count').textContent = gameState.markersFound.size;
+
+            // Update marker status indicators
+            gameState.markersFound.forEach(markerId => {
+                const statusEl = document.getElementById(`status-${markerId}`);
+                if (statusEl) {
+                    statusEl.classList.add('found');
+                    statusEl.querySelector('.marker-icon').textContent = '✅';
+                }
+            });
+        }
+
+        // Show notification when marker is found
+        function showNotification(markerId) {
+            const data = gameState.markerData[markerId];
+
+            document.getElementById('notif-icon').textContent = data.icon;
+            document.getElementById('notif-title').textContent = data.name;
+            document.getElementById('notif-message').innerHTML =
+                `<p><strong>${data.message}</strong></p>
+                 <p style="margin-top: 15px; color: #764ba2; font-style: italic;">
+                    💡 ${data.clue}
+                 </p>`;
+
+            document.getElementById('notification').classList.add('show');
+        }
+
+        // Close notification
+        function closeNotification() {
+            document.getElementById('notification').classList.remove('show');
+        }
+
+        // Show final treasure modal
+        function showTreasureModal() {
+            playSound('victory');
+            document.getElementById('treasure-modal').classList.add('show');
+
+            // Optional: Clear progress after completing
+            // localStorage.removeItem('treasureHuntProgress');
+        }
+
+        // Play sound effects
+        function playSound(type) {
+            // You can add actual sound files here
+            const sounds = {
+                success: 'data:audio/wav;base64,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',
+                victory: 'data:audio/wav;base64,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'
+            };
+
+            // Create audio element and play
+            try {
+                const audio = new Audio(sounds[type]);
+                audio.volume = 0.3;
+                audio.play().catch(e => console.log('Audio play failed:', e));
+            } catch (e) {
+                console.log('Audio creation failed:', e);
+            }
+        }
+
+        // Initialize on load
+        window.addEventListener('load', () => {
+            console.log('AR Experience loaded');
+        });
+    </script>
+</body>
+</html>

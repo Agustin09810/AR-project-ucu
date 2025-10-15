@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marcadores AR - Imprimir</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+        }
+
+        .instructions {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+
+        .instructions h2 {
+            color: #856404;
+            margin-top: 0;
+        }
+
+        .instructions ol {
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .markers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .marker-card {
+            border: 2px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            background: white;
+            page-break-inside: avoid;
+        }
+
+        .marker-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .marker-card .location {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        .marker-image {
+            width: 100%;
+            max-width: 300px;
+            height: 300px;
+            border: 3px solid #000;
+            margin: 20px auto;
+            display: block;
+            background: white;
+        }
+
+        .marker-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        .marker-info strong {
+            color: #764ba2;
+        }
+
+        .print-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto;
+        }
+
+        .print-btn:hover {
+            opacity: 0.9;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .container {
+                padding: 0;
+            }
+
+            .print-btn, .instructions {
+                display: none;
+            }
+
+            .marker-card {
+                page-break-inside: avoid;
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏛️ Marcadores AR - Búsqueda del Tesoro Sacré Coeur</h1>
+
+        <div class="instructions">
+            <h2>📋 Instrucciones de Impresión</h2>
+            <ol>
+                <li><strong>Imprime estos marcadores</strong> en papel blanco de buena calidad (tamaño A4 o carta)</li>
+                <li><strong>Asegúrate de imprimir en escala real</strong> sin ajustar el tamaño (100% de escala)</li>
+                <li><strong>Los bordes negros son importantes</strong> para que la cámara detecte los marcadores correctamente</li>
+                <li><strong>Coloca cada marcador</strong> en la ubicación sugerida del Edificio Sacré Coeur</li>
+                <li><strong>Mantén los marcadores planos</strong> y en superficies bien iluminadas</li>
+                <li><strong>Evita reflejos</strong> colocándolos en superficies mate (no vidrio ni superficies brillantes)</li>
+            </ol>
+        </div>
+
+        <button class="print-btn" onclick="window.print()">🖨️ Imprimir Marcadores</button>
+
+        <div class="markers-grid">
+            <!-- Marker 0 -->
+            <div class="marker-card">
+                <h3>Marcador 0: La Entrada</h3>
+                <p class="location">📍 Sugerencia: Entrada principal del edificio</p>
+                <canvas id="marker-0" class="marker-image"></canvas>
+                <div class="marker-info">
+                    <p><strong>Pista revelada:</strong> Inicio de la aventura. Busca donde los libros guardan secretos.</p>
+                </div>
+            </div>
+
+            <!-- Marker 1 -->
+            <div class="marker-card">
+                <h3>Marcador 1: La Biblioteca</h3>
+                <p class="location">📍 Sugerencia: Biblioteca o sala de lectura</p>
+                <canvas id="marker-1" class="marker-image"></canvas>
+                <div class="marker-info">
+                    <p><strong>Pista revelada:</strong> Los archivos antiguos. Dirígete donde se reúnen las mentes.</p>
+                </div>
+            </div>
+
+            <!-- Marker 2 -->
+            <div class="marker-card">
+                <h3>Marcador 2: La Sala Principal</h3>
+                <p class="location">📍 Sugerencia: Sala de reuniones o auditorio</p>
+                <canvas id="marker-2" class="marker-image"></canvas>
+                <div class="marker-info">
+                    <p><strong>Pista revelada:</strong> El corazón del edificio. El tesoro no es oro ni plata.</p>
+                </div>
+            </div>
+
+            <!-- Marker 3 -->
+            <div class="marker-card">
+                <h3>Marcador 3: El Tesoro</h3>
+                <p class="location">📍 Sugerencia: Lugar emblemático del edificio</p>
+                <canvas id="marker-3" class="marker-image"></canvas>
+                <div class="marker-info">
+                    <p><strong>Revelación final:</strong> El verdadero tesoro es el conocimiento que se transmite aquí.</p>
+                </div>
+            </div>
+        </div>
+
+        <button class="print-btn" onclick="window.print()">🖨️ Imprimir Marcadores</button>
+    </div>
+
+    <script>
+        // Generate marker patterns
+        const patterns = {
+            0: [
+                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
+                [0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
+                [0,1,0,1,1,1,1,1,1,1,1,1,1,0,1,0],
+                [0,1,0,1,0,0,0,0,0,0,0,0,1,0,1,0],
+                [0,1,0,1,0,1,1,1,1,1,1,0,1,0,1,0],
+                [0,1,0,1,0,1,0,0,0,0,1,0,1,0,1,0],
+                [0,1,0,1,0,1,0,1,1,0,1,0,1,0,1,0],
+                [0,1,0,1,0,1,0,1,1,0,1,0,1,0,1,0],
+                [0,1,0,1,0,1,0,0,0,0,1,0,1,0,1,0],
+                [0,1,0,1,0,1,1,1,1,1,1,0,1,0,1,0],
+                [0,1,0,1,0,0,0,0,0,0,0,0,1,0,1,0],
+                [0,1,0,1,1,1,1,1,1,1,1,1,1,0,1,0],
+                [0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
+                [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
+                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+            ],
+            1: [
+                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
+                [0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
+                [0,1,0,1,1,1,1,1,1,1,1,1,1,0,1,0],
+                [0,1,0,1,1,0,0,1,1,1,1,0,1,0,1,0],
+                [0,1,0,1,0,1,0,0,0,0,1,0,1,0,1,0],
+                [0,1,0,1,1,0,1,1,1,1,0,1,1,0,1,0],
+                [0,1,0,1,1,0,1,0,0,1,0,1,1,0,1,0],
+                [0,1,0,1,1,0,1,0,0,1,0,1,1,0,1,0],
+                [0,1,0,1,1,0,1,1,1,1,0,1,1,0,1,0],
+                [0,1,0,1,0,1,0,0,0,0,1,0,1,0,1,0],
+                [0,1,0,1,0,0,1,1,1,1,0,0,1,0,1,0],
+                [0,1,0,1,1,1,1,1,1,1,1,1,1,0,1,0],
+                [0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
+                [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
+                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+            ],
+            2: [
+                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
+                [0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
+                [0,1,0,1,1,1,1,1,1,1,1,1,1,0,1,0],
+                [0,1,0,1,1,0,0,0,0,0,0,1,1,0,1,0],
+                [0,1,0,1,0,1,0,0,0,0,1,0,1,0,1,0],
+                [0,1,0,1,0,0,1,0,0,1,0,0,1,0,1,0],
+                [0,1,0,1,0,0,0,1,1,0,0,0,1,0,1,0],
+                [0,1,0,1,0,0,0,1,1,0,0,0,1,0,1,0],
+                [0,1,0,1,0,0,1,0,0,1,0,0,1,0,1,0],
+                [0,1,0,1,0,1,0,0,0,0,1,0,1,0,1,0],
+                [0,1,0,1,1,0,0,0,0,0,0,1,1,0,1,0],
+                [0,1,0,1,1,1,1,1,1,1,1,1,1,0,1,0],
+                [0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
+                [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
+                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+            ],
+            3: [
+                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
+                [0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
+                [0,1,0,1,1,1,1,1,1,1,1,1,1,0,1,0],
+                [0,1,0,1,0,0,1,0,0,1,0,0,1,0,1,0],
+                [0,1,0,1,0,1,0,0,0,0,1,0,1,0,1,0],
+                [0,1,0,1,1,0,0,1,1,0,0,1,1,0,1,0],
+                [0,1,0,1,0,0,1,1,1,1,0,0,1,0,1,0],
+                [0,1,0,1,0,0,1,1,1,1,0,0,1,0,1,0],
+                [0,1,0,1,1,0,0,1,1,0,0,1,1,0,1,0],
+                [0,1,0,1,0,1,0,0,0,0,1,0,1,0,1,0],
+                [0,1,0,1,0,0,1,0,0,1,0,0,1,0,1,0],
+                [0,1,0,1,1,1,1,1,1,1,1,1,1,0,1,0],
+                [0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
+                [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
+                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+            ]
+        };
+
+        // Draw markers on canvas
+        Object.keys(patterns).forEach(markerId => {
+            const canvas = document.getElementById(`marker-${markerId}`);
+            const ctx = canvas.getContext('2d');
+            const pattern = patterns[markerId];
+            const size = 16;
+            const cellSize = canvas.width / size;
+
+            // Draw the pattern
+            for (let y = 0; y < size; y++) {
+                for (let x = 0; x < size; x++) {
+                    ctx.fillStyle = pattern[y][x] === 1 ? '#FFFFFF' : '#000000';
+                    ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                }
+            }
+
+            // Draw border
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(0, 0, canvas.width, canvas.height);
+        });
+    </script>
+</body>
+</html>

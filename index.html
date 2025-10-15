@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Búsqueda del Tesoro AR - Sacré Coeur</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+
+        .treasure-icon {
+            font-size: 5em;
+            margin: 20px 0;
+        }
+
+        p {
+            color: #555;
+            line-height: 1.6;
+            margin: 15px 0;
+            font-size: 1.1em;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 30px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .instructions {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .instructions h2 {
+            color: #764ba2;
+            margin-bottom: 15px;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin: 10px 0;
+            color: #555;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .warning p {
+            color: #856404;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="treasure-icon">🏛️💎</div>
+        <h1>Búsqueda del Tesoro AR</h1>
+        <h2>Edificio Sacré Coeur</h2>
+
+        <p>Bienvenido a una aventura de Realidad Aumentada. Una antigua leyenda cuenta que un tesoro está escondido en el Edificio Sacré Coeur...</p>
+
+        <div class="instructions">
+            <h2>📋 Instrucciones</h2>
+            <ol>
+                <li>Presiona el botón "Iniciar Búsqueda"</li>
+                <li>Permite el acceso a la cámara cuando se solicite</li>
+                <li>Busca y escanea los <strong>4 marcadores AR</strong> distribuidos por el edificio</li>
+                <li>Cada marcador revelará una pista o parte de la historia</li>
+                <li>Encuentra todos los marcadores para descubrir el tesoro final</li>
+            </ol>
+        </div>
+
+        <div class="warning">
+            <p><strong>⚠️ Importante:</strong> Esta experiencia requiere acceso a la cámara de tu dispositivo y funciona mejor en dispositivos móviles con buena iluminación.</p>
+        </div>
+
+        <a href="ar-experience.html" class="btn">🎮 Iniciar Búsqueda</a>
+    </div>
+</body>
+</html>
