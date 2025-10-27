@@ -166,7 +166,7 @@
             <div class="marker-card">
                 <h3>Marcador 1: La Biblioteca (BARCODE 1)</h3>
                 <p class="location">📍 Sugerencia: Biblioteca o sala de lectura</p>
-                <canvas id="barcode-1" class="marker-image"></canvas>
+                <img src="barcode-1.png" class="marker-image" alt="Marcador BARCODE 1">
                 <div class="marker-info">
                     <p><strong>Tipo:</strong> Barcode matriz 3x3, valor 1</p>
                     <p><strong>Pista revelada:</strong> Los archivos antiguos. Dirígete donde se reúnen las mentes.</p>
@@ -177,7 +177,7 @@
             <div class="marker-card">
                 <h3>Marcador 2: La Sala Principal (BARCODE 2)</h3>
                 <p class="location">📍 Sugerencia: Sala de reuniones o auditorio</p>
-                <canvas id="barcode-2" class="marker-image"></canvas>
+                <img src="barcode-2.png" class="marker-image" alt="Marcador BARCODE 2">
                 <div class="marker-info">
                     <p><strong>Tipo:</strong> Barcode matriz 3x3, valor 2</p>
                     <p><strong>Pista revelada:</strong> El corazón del edificio. El tesoro no es oro ni plata.</p>
@@ -188,7 +188,7 @@
             <div class="marker-card">
                 <h3>Marcador 3: El Tesoro (BARCODE 3)</h3>
                 <p class="location">📍 Sugerencia: Lugar emblemático del edificio</p>
-                <canvas id="barcode-3" class="marker-image"></canvas>
+                <img src="barcode-3.png" class="marker-image" alt="Marcador BARCODE 3">
                 <div class="marker-info">
                     <p><strong>Tipo:</strong> Barcode matriz 3x3, valor 3</p>
                     <p><strong>Revelación final:</strong> El verdadero tesoro es el conocimiento que se transmite aquí.</p>
@@ -199,70 +199,6 @@
         <button class="print-btn" onclick="window.print()">🖨️ Imprimir Marcadores</button>
     </div>
 
-    <script>
-        // Función para generar marcadores barcode 3x3
-        // Los valores se representan en binario de 9 bits (3x3)
-        function drawBarcode(canvasId, value) {
-            const canvas = document.getElementById(canvasId);
-            const ctx = canvas.getContext('2d');
-
-            // Tamaño del canvas
-            const size = canvas.width;
-            const gridSize = 5; // 5x5 grid (borde + 3x3 interno)
-            const cellSize = size / gridSize;
-
-            // Convertir valor a binario de 9 bits
-            const binary = value.toString(2).padStart(9, '0');
-
-            // Limpiar canvas
-            ctx.fillStyle = 'white';
-            ctx.fillRect(0, 0, size, size);
-
-            // Dibujar borde negro
-            ctx.fillStyle = 'black';
-            // Borde superior
-            ctx.fillRect(0, 0, size, cellSize);
-            // Borde inferior
-            ctx.fillRect(0, size - cellSize, size, cellSize);
-            // Borde izquierdo
-            ctx.fillRect(0, 0, cellSize, size);
-            // Borde derecho
-            ctx.fillRect(size - cellSize, 0, cellSize, size);
-
-            // Dibujar patrón 3x3 interno
-            let bitIndex = 0;
-            for (let row = 0; row < 3; row++) {
-                for (let col = 0; col < 3; col++) {
-                    const bit = binary[bitIndex];
-                    const x = (col + 1) * cellSize;
-                    const y = (row + 1) * cellSize;
-
-                    if (bit === '1') {
-                        ctx.fillStyle = 'black';
-                    } else {
-                        ctx.fillStyle = 'white';
-                    }
-
-                    ctx.fillRect(x, y, cellSize, cellSize);
-                    bitIndex++;
-                }
-            }
-
-            // Dibujar borde del canvas
-            ctx.strokeStyle = 'black';
-            ctx.lineWidth = 3;
-            ctx.strokeRect(0, 0, size, size);
-        }
-
-        // Generar los marcadores cuando se carga la página
-        window.addEventListener('load', function() {
-            // Barcode value 1
-            drawBarcode('barcode-1', 1);
-            // Barcode value 2
-            drawBarcode('barcode-2', 2);
-            // Barcode value 3
-            drawBarcode('barcode-3', 3);
-        });
-    </script>
+    <!-- No se necesita JavaScript - los marcadores se cargan como imágenes -->
 </body>
 </html>

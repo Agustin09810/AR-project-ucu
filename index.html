@@ -2,9 +2,55 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Búsqueda del Tesoro AR - Sacré Coeur</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
     <style>
+        /* ===== CSS VARIABLES - DESIGN SYSTEM ===== */
+        :root {
+            /* Colors */
+            --primary-gold: #FFB800;
+            --primary-gold-dark: #FFA000;
+            --treasure-blue: #0A2463;
+            --treasure-blue-light: #3E92CC;
+            --emerald: #00B894;
+            --emerald-light: #06D6A0;
+            --navy: #1A1A2E;
+            --navy-dark: #16213E;
+            --parchment: #FFF8E7;
+            --parchment-light: #FFFAEB;
+            --success-gold: #FFD700;
+            --shadow-dark: rgba(26, 26, 46, 0.3);
+
+            /* Typography */
+            --font-display: 'Fredoka One', cursive;
+            --font-body: 'Poppins', sans-serif;
+
+            /* Spacing */
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+
+            /* Border Radius */
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+
+            /* Shadows */
+            --shadow-sm: 0 2px 8px var(--shadow-dark);
+            --shadow-md: 0 4px 16px var(--shadow-dark);
+            --shadow-lg: 0 8px 32px var(--shadow-dark);
+            --shadow-xl: 0 16px 48px var(--shadow-dark);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,95 +58,282 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: var(--font-body);
+            background: linear-gradient(135deg, var(--treasure-blue) 0%, var(--navy-dark) 50%, var(--treasure-blue-light) 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 15s ease infinite;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: var(--spacing-md);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background stars/sparkles */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(2px 2px at 20% 30%, white, transparent),
+                radial-gradient(2px 2px at 60% 70%, white, transparent),
+                radial-gradient(1px 1px at 50% 50%, white, transparent),
+                radial-gradient(1px 1px at 80% 10%, white, transparent),
+                radial-gradient(2px 2px at 90% 60%, white, transparent),
+                radial-gradient(1px 1px at 33% 80%, white, transparent);
+            background-size: 200% 200%;
+            background-position: 0% 0%;
+            animation: stars 20s ease infinite;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes stars {
+            0%, 100% { transform: translate(0, 0); opacity: 0.5; }
+            50% { transform: translate(-50px, -50px); opacity: 0.8; }
         }
 
         .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            background: var(--parchment);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl), 0 0 60px rgba(255, 184, 0, 0.2);
             max-width: 600px;
             width: 100%;
-            padding: 40px;
+            padding: var(--spacing-xl);
             text-align: center;
+            position: relative;
+            animation: fadeInUp 0.8s ease-out;
+            border: 3px solid var(--primary-gold);
         }
 
-        h1 {
-            color: #667eea;
-            margin-bottom: 20px;
-            font-size: 2.5em;
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .treasure-icon {
             font-size: 5em;
-            margin: 20px 0;
+            margin: var(--spacing-md) 0;
+            animation: bounce 2s ease-in-out infinite;
+            filter: drop-shadow(0 4px 8px rgba(255, 184, 0, 0.3));
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        h1 {
+            font-family: var(--font-display);
+            color: var(--treasure-blue);
+            margin-bottom: var(--spacing-sm);
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
+            text-shadow: 3px 3px 0 var(--primary-gold);
+            letter-spacing: 1px;
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-family: var(--font-body);
+            font-weight: 600;
+            color: var(--emerald);
+            margin-bottom: var(--spacing-md);
+            font-size: clamp(1rem, 3vw, 1.4rem);
         }
 
         p {
-            color: #555;
-            line-height: 1.6;
-            margin: 15px 0;
-            font-size: 1.1em;
+            color: var(--navy);
+            line-height: 1.8;
+            margin: var(--spacing-md) 0;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            font-weight: 400;
         }
 
         .btn {
             display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 40px;
+            background: linear-gradient(135deg, var(--primary-gold) 0%, var(--primary-gold-dark) 100%);
+            color: var(--navy);
+            padding: var(--spacing-md) var(--spacing-xl);
             border-radius: 50px;
             text-decoration: none;
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-top: 30px;
-            transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            font-weight: 700;
+            font-family: var(--font-display);
+            margin-top: var(--spacing-lg);
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md), 0 0 20px rgba(255, 184, 0, 0.4);
+            border: 3px solid var(--primary-gold-dark);
+            position: relative;
+            overflow: hidden;
+            min-height: 56px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: var(--shadow-lg), 0 0 30px rgba(255, 184, 0, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        .btn span {
+            position: relative;
+            z-index: 1;
         }
 
         .instructions {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
+            background: linear-gradient(135deg, rgba(0, 184, 148, 0.1) 0%, rgba(6, 214, 160, 0.05) 100%);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            margin: var(--spacing-md) 0;
             text-align: left;
+            border: 2px solid var(--emerald);
+            box-shadow: var(--shadow-sm);
         }
 
-        .instructions h2 {
-            color: #764ba2;
-            margin-bottom: 15px;
+        .instructions h3 {
+            font-family: var(--font-display);
+            color: var(--emerald);
+            margin-bottom: var(--spacing-md);
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
         }
 
         .instructions ol {
-            margin-left: 20px;
+            margin-left: var(--spacing-md);
+            padding-left: var(--spacing-sm);
         }
 
         .instructions li {
-            margin: 10px 0;
-            color: #555;
+            margin: var(--spacing-sm) 0;
+            color: var(--navy);
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            line-height: 1.6;
+        }
+
+        .instructions li strong {
+            color: var(--treasure-blue);
+            font-weight: 700;
         }
 
         .warning {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 5px;
+            background: linear-gradient(135deg, rgba(255, 184, 0, 0.15) 0%, rgba(255, 160, 0, 0.1) 100%);
+            border-left: 4px solid var(--primary-gold);
+            padding: var(--spacing-md);
+            margin: var(--spacing-md) 0;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-sm);
         }
 
         .warning p {
-            color: #856404;
+            color: var(--navy);
             margin: 0;
+            font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+        }
+
+        .warning strong {
+            color: var(--primary-gold-dark);
+            font-weight: 700;
+        }
+
+        /* Decorative corners */
+        .container::before,
+        .container::after {
+            content: '✦';
+            position: absolute;
+            font-size: 2rem;
+            color: var(--primary-gold);
+            opacity: 0.6;
+            animation: spin 10s linear infinite;
+        }
+
+        .container::before {
+            top: 15px;
+            left: 15px;
+        }
+
+        .container::after {
+            bottom: 15px;
+            right: 15px;
+            animation-direction: reverse;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            body {
+                padding: var(--spacing-sm);
+            }
+
+            .container {
+                padding: var(--spacing-lg);
+                border-width: 2px;
+            }
+
+            .treasure-icon {
+                font-size: 4em;
+            }
+
+            .btn {
+                width: 100%;
+                padding: var(--spacing-md) var(--spacing-lg);
+            }
+
+            .instructions ol {
+                margin-left: var(--spacing-sm);
+            }
+        }
+
+        @media (max-width: 400px) {
+            .container {
+                padding: var(--spacing-md);
+            }
+
+            .treasure-icon {
+                font-size: 3.5em;
+            }
         }
     </style>
 </head>
@@ -113,7 +346,7 @@
         <p>Bienvenido a una aventura de Realidad Aumentada. Una antigua leyenda cuenta que un tesoro está escondido en el Edificio Sacré Coeur...</p>
 
         <div class="instructions">
-            <h2>📋 Instrucciones</h2>
+            <h3>📋 Instrucciones</h3>
             <ol>
                 <li>Presiona el botón "Iniciar Búsqueda"</li>
                 <li>Permite el acceso a la cámara cuando se solicite</li>
@@ -127,7 +360,7 @@
             <p><strong>⚠️ Importante:</strong> Esta experiencia requiere acceso a la cámara de tu dispositivo y funciona mejor en dispositivos móviles con buena iluminación.</p>
         </div>
 
-        <a href="ar-experience.html" class="btn">🎮 Iniciar Búsqueda</a>
+        <a href="ar-experience.html" class="btn"><span>🎮 Iniciar Búsqueda</span></a>
     </div>
 </body>
 </html>
