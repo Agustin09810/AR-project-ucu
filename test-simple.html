@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR.js - Test Simple</title>
+
+    <!-- A-Frame -->
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+
+    <!-- AR.js -->
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #info {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 1000;
+            font-family: Arial, sans-serif;
+        }
+
+        .marker-status {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+
+        .found {
+            color: #4CAF50;
+        }
+    </style>
+
+    <!-- Componente para eventos de marcadores -->
+    <script>
+        // Escuchar eventos de inicialización de cámara
+        window.addEventListener('camera-init', (data) => {
+            console.log('✅ Cámara inicializada', data);
+            document.getElementById('camera-status').textContent = '✅ Cámara: OK';
+        });
+
+        window.addEventListener('camera-error', (error) => {
+            console.log('❌ Error de cámara', error);
+            document.getElementById('camera-status').textContent = '❌ Cámara: ERROR';
+        });
+
+        // Registrar componente personalizado para eventos de marcadores
+        AFRAME.registerComponent('registerevents', {
+            init: function () {
+                const marker = this.el;
+                const markerId = marker.id;
+
+                console.log('🔧 Componente registerevents iniciado para:', markerId);
+
+                marker.addEventListener('markerFound', function() {
+                    console.log('✅ MARCADOR ENCONTRADO:', markerId);
+
+                    // Actualizar UI
+                    const statusEl = document.getElementById('status-' + markerId);
+                    if (statusEl) {
+                        statusEl.textContent = '✅ ' + markerId + ' - ENCONTRADO!';
+                        statusEl.classList.add('found');
+                    }
+
+                    // Mostrar alerta (solo la primera vez)
+                    if (!marker.alreadyFound) {
+                        marker.alreadyFound = true;
+                        alert('¡Marcador encontrado! ' + markerId);
+                    }
+                });
+
+                marker.addEventListener('markerLost', function() {
+                    console.log('❌ MARCADOR PERDIDO:', markerId);
+
+                    // Actualizar UI
+                    const statusEl = document.getElementById('status-' + markerId);
+                    if (statusEl) {
+                        statusEl.textContent = '⏹️ ' + markerId + ' - buscando...';
+                        statusEl.classList.remove('found');
+                    }
+                });
+            }
+        });
+
+        // Log cuando se carga la página
+        window.addEventListener('load', () => {
+            console.log('📱 Página cargada - AR.js Test Simple');
+            console.log('👀 Abre la consola para ver los eventos');
+        });
+    </script>
+</head>
+<body>
+    <!-- Panel de información -->
+    <div id="info">
+        <h2 style="margin-top:0;">🎯 AR.js - Test Simple</h2>
+        <div id="camera-status" style="margin-bottom: 15px;">⏳ Cámara: Inicializando...</div>
+
+        <h3 style="margin-bottom: 10px;">Estado de Marcadores:</h3>
+        <div class="marker-status" id="status-marker-hiro">⏹️ marker-hiro - buscando...</div>
+        <div class="marker-status" id="status-marker-barcode-1">⏹️ marker-barcode-1 - buscando...</div>
+        <div class="marker-status" id="status-marker-barcode-2">⏹️ marker-barcode-2 - buscando...</div>
+
+        <p style="margin-top: 15px; font-size: 14px; opacity: 0.8;">
+            👁️ Apunta la cámara a un marcador<br>
+            📊 Abre la consola para ver logs detallados
+        </p>
+    </div>
+
+    <!-- Escena AR -->
+    <a-scene
+        embedded
+        arjs='sourceType: webcam; detectionMode: mono_and_matrix; matrixCodeType: 3x3; sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960;'
+        vr-mode-ui="enabled: false"
+        renderer="logarithmicDepthBuffer: true; precision: medium;"
+        loading-screen="enabled: false">
+
+        <!-- MARCADOR HIRO -->
+        <a-marker preset='hiro' id='marker-hiro' registerevents>
+            <a-box
+                position='0 0.5 0'
+                material='opacity: 0.5; side: double; color: blue;'
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 3000">
+            </a-box>
+            <a-text
+                value="HIRO"
+                position="-0.5 1.5 0"
+                color="#FFFFFF"
+                align="center"
+                width="2">
+            </a-text>
+        </a-marker>
+
+        <!-- MARCADOR BARCODE 1 -->
+        <a-marker type='barcode' value='1' id='marker-barcode-1' registerevents>
+            <a-cylinder
+                position='0 0.5 0'
+                radius='0.3'
+                height='1'
+                material='opacity: 0.5; side: double; color: red;'
+                animation="property: position; to: 0 1 0; dir: alternate; loop: true; dur: 1000">
+            </a-cylinder>
+            <a-text
+                value="BARCODE 1"
+                position="-0.8 1.5 0"
+                color="#FFFFFF"
+                align="center"
+                width="2">
+            </a-text>
+        </a-marker>
+
+        <!-- MARCADOR BARCODE 2 -->
+        <a-marker type='barcode' value='2' id='marker-barcode-2' registerevents>
+            <a-sphere
+                position='0 0.5 0'
+                radius='0.4'
+                material='opacity: 0.5; side: double; color: green;'
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 2000">
+            </a-sphere>
+            <a-text
+                value="BARCODE 2"
+                position="-0.8 1.5 0"
+                color="#FFFFFF"
+                align="center"
+                width="2">
+            </a-text>
+        </a-marker>
+
+        <!-- Cámara -->
+        <a-entity camera></a-entity>
+    </a-scene>
+</body>
+</html>
