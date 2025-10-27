@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marcadores AR - Imprimir</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+        }
+
+        .instructions {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+
+        .instructions h2 {
+            color: #856404;
+            margin-top: 0;
+        }
+
+        .instructions ol {
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .markers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .marker-card {
+            border: 2px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            background: white;
+            page-break-inside: avoid;
+        }
+
+        .marker-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .marker-card .location {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        .marker-image {
+            width: 100%;
+            max-width: 300px;
+            height: 300px;
+            border: 3px solid #000;
+            margin: 20px auto;
+            display: block;
+            background: white;
+        }
+
+        .marker-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        .marker-info strong {
+            color: #764ba2;
+        }
+
+        .print-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto;
+        }
+
+        .print-btn:hover {
+            opacity: 0.9;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .container {
+                padding: 0;
+            }
+
+            .print-btn, .instructions {
+                display: none;
+            }
+
+            .marker-card {
+                page-break-inside: avoid;
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏛️ Marcadores AR - Búsqueda del Tesoro Sacré Coeur</h1>
+
+        <div class="instructions">
+            <h2>📋 Instrucciones de Impresión</h2>
+            <ol>
+                <li><strong>Descarga el marcador HIRO</strong> desde <a href="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/hiro.png" target="_blank">aquí</a> o imprime directamente esta página</li>
+                <li><strong>Para los marcadores BARCODE</strong>, imprime esta página tal cual (los genera automáticamente)</li>
+                <li><strong>Imprime en escala real</strong> sin ajustar el tamaño (100% de escala)</li>
+                <li><strong>Los bordes negros son cruciales</strong> para la detección correcta</li>
+                <li><strong>Coloca cada marcador</strong> en la ubicación sugerida del edificio</li>
+                <li><strong>Mantén los marcadores planos</strong> y en superficies bien iluminadas</li>
+                <li><strong>Evita reflejos</strong> colocándolos en superficies mate (no vidrio)</li>
+            </ol>
+        </div>
+
+        <button class="print-btn" onclick="window.print()">🖨️ Imprimir Marcadores</button>
+
+        <div class="markers-grid">
+            <!-- Marker 0: HIRO -->
+            <div class="marker-card">
+                <h3>Marcador 0: La Entrada (HIRO)</h3>
+                <p class="location">📍 Sugerencia: Entrada principal del edificio</p>
+                <img src="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/hiro.png"
+                     class="marker-image"
+                     alt="Marcador HIRO"
+                     crossorigin="anonymous">
+                <div class="marker-info">
+                    <p><strong>Tipo:</strong> Marcador predefinido HIRO de AR.js</p>
+                    <p><strong>Pista revelada:</strong> Inicio de la aventura. Busca donde los libros guardan secretos.</p>
+                </div>
+            </div>
+
+            <!-- Marker 1: BARCODE 1 -->
+            <div class="marker-card">
+                <h3>Marcador 1: La Biblioteca (BARCODE 1)</h3>
+                <p class="location">📍 Sugerencia: Biblioteca o sala de lectura</p>
+                <canvas id="barcode-1" class="marker-image"></canvas>
+                <div class="marker-info">
+                    <p><strong>Tipo:</strong> Barcode matriz 3x3, valor 1</p>
+                    <p><strong>Pista revelada:</strong> Los archivos antiguos. Dirígete donde se reúnen las mentes.</p>
+                </div>
+            </div>
+
+            <!-- Marker 2: BARCODE 2 -->
+            <div class="marker-card">
+                <h3>Marcador 2: La Sala Principal (BARCODE 2)</h3>
+                <p class="location">📍 Sugerencia: Sala de reuniones o auditorio</p>
+                <canvas id="barcode-2" class="marker-image"></canvas>
+                <div class="marker-info">
+                    <p><strong>Tipo:</strong> Barcode matriz 3x3, valor 2</p>
+                    <p><strong>Pista revelada:</strong> El corazón del edificio. El tesoro no es oro ni plata.</p>
+                </div>
+            </div>
+
+            <!-- Marker 3: BARCODE 3 -->
+            <div class="marker-card">
+                <h3>Marcador 3: El Tesoro (BARCODE 3)</h3>
+                <p class="location">📍 Sugerencia: Lugar emblemático del edificio</p>
+                <canvas id="barcode-3" class="marker-image"></canvas>
+                <div class="marker-info">
+                    <p><strong>Tipo:</strong> Barcode matriz 3x3, valor 3</p>
+                    <p><strong>Revelación final:</strong> El verdadero tesoro es el conocimiento que se transmite aquí.</p>
+                </div>
+            </div>
+        </div>
+
+        <button class="print-btn" onclick="window.print()">🖨️ Imprimir Marcadores</button>
+    </div>
+
+    <script>
+        // Función para generar marcadores barcode 3x3
+        // Los valores se representan en binario de 9 bits (3x3)
+        function drawBarcode(canvasId, value) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+
+            // Tamaño del canvas
+            const size = canvas.width;
+            const gridSize = 5; // 5x5 grid (borde + 3x3 interno)
+            const cellSize = size / gridSize;
+
+            // Convertir valor a binario de 9 bits
+            const binary = value.toString(2).padStart(9, '0');
+
+            // Limpiar canvas
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, size, size);
+
+            // Dibujar borde negro
+            ctx.fillStyle = 'black';
+            // Borde superior
+            ctx.fillRect(0, 0, size, cellSize);
+            // Borde inferior
+            ctx.fillRect(0, size - cellSize, size, cellSize);
+            // Borde izquierdo
+            ctx.fillRect(0, 0, cellSize, size);
+            // Borde derecho
+            ctx.fillRect(size - cellSize, 0, cellSize, size);
+
+            // Dibujar patrón 3x3 interno
+            let bitIndex = 0;
+            for (let row = 0; row < 3; row++) {
+                for (let col = 0; col < 3; col++) {
+                    const bit = binary[bitIndex];
+                    const x = (col + 1) * cellSize;
+                    const y = (row + 1) * cellSize;
+
+                    if (bit === '1') {
+                        ctx.fillStyle = 'black';
+                    } else {
+                        ctx.fillStyle = 'white';
+                    }
+
+                    ctx.fillRect(x, y, cellSize, cellSize);
+                    bitIndex++;
+                }
+            }
+
+            // Dibujar borde del canvas
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(0, 0, size, size);
+        }
+
+        // Generar los marcadores cuando se carga la página
+        window.addEventListener('load', function() {
+            // Barcode value 1
+            drawBarcode('barcode-1', 1);
+            // Barcode value 2
+            drawBarcode('barcode-2', 2);
+            // Barcode value 3
+            drawBarcode('barcode-3', 3);
+        });
+    </script>
+</body>
+</html>

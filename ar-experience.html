@@ -297,8 +297,8 @@
             <!-- <a-asset-item id="tree" src="models/tree.gltf"></a-asset-item> -->
         </a-assets>
 
-        <!-- MARKER 0: Entrance - Introduction -->
-        <a-marker type="pattern" url="markers/pattern-marker-0.patt" id="marker-0" emitevents="true" registerevents>
+        <!-- MARKER 0: Entrance - Introduction (HIRO) -->
+        <a-marker preset="hiro" id="marker-0" emitevents="true" registerevents>
             <a-box position="0 0.5 0" material="color: #4CAF50;"
                    animation="property: rotation; to: 0 360 0; loop: true; dur: 3000">
             </a-box>
@@ -308,8 +308,8 @@
                     material="color: #FFD700;" rotation="0 0 0"></a-cone>
         </a-marker>
 
-        <!-- MARKER 1: Library - Second Clue -->
-        <a-marker type="pattern" url="markers/pattern-marker-1.patt" id="marker-1" emitevents="true" registerevents>
+        <!-- MARKER 1: Library - Second Clue (BARCODE 1) -->
+        <a-marker type="barcode" value="1" id="marker-1" emitevents="true" registerevents>
             <a-cylinder position="0 0.5 0" radius="0.3" height="1"
                         material="color: #2196F3;"
                         animation="property: position; to: 0 1 0; dir: alternate; loop: true; dur: 1000">
@@ -321,8 +321,8 @@
                      rotation="90 0 0"></a-torus>
         </a-marker>
 
-        <!-- MARKER 2: Hall - Third Clue -->
-        <a-marker type="pattern" url="markers/pattern-marker-2.patt" id="marker-2" emitevents="true" registerevents>
+        <!-- MARKER 2: Hall - Third Clue (BARCODE 2) -->
+        <a-marker type="barcode" value="2" id="marker-2" emitevents="true" registerevents>
             <a-sphere position="0 0.5 0" radius="0.4" material="color: #FF9800;">
             </a-sphere>
             <a-text value="SALA PRINCIPAL" position="-1 1.5 0" color="#FFFFFF"
@@ -332,8 +332,8 @@
             </a-octahedron>
         </a-marker>
 
-        <!-- MARKER 3: Treasure - Final -->
-        <a-marker type="pattern" url="markers/pattern-marker-3.patt" id="marker-3" emitevents="true" registerevents>
+        <!-- MARKER 3: Treasure - Final (BARCODE 3) -->
+        <a-marker type="barcode" value="3" id="marker-3" emitevents="true" registerevents>
             <a-entity position="0 0.5 0">
                 <a-box position="0 0 0" width="0.5" height="0.5" depth="0.5"
                        material="color: #FFD700; metalness: 0.8; roughness: 0.2"
